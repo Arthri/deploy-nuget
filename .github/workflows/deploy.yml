@@ -1,0 +1,89 @@
+name: Deploy / NuGet
+run-name: Deploy / NuGet
+
+on:
+  workflow_call:
+    inputs:
+      environment_name:
+        default: "NuGet (Stable)"
+        description: The name of the environment containing the NuGet API key.
+        required: false
+        type: string
+      project_path:
+        default: ""
+        description: The path of the project to build and pack.
+        required: false
+        type: string
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  deploy_nuget:
+    environment:
+      name: ${{ inputs.environment_name }}
+      url: ${{ steps.build.outputs.PACKAGE_VERSION_URL }}
+
+    runs-on: ubuntu-22.04
+    timeout-minutes: 2
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        id: setup-dotnet
+        uses: actions/setup-dotnet@v3
+
+      - name: Write MSBuild Extensions
+        run: |
+          msbuild_dir="$(dirname "$(which dotnet)")/sdk/${{ steps.setup-dotnet.outputs.dotnet-version }}/"
+          msbuild_path="${msbuild_dir}MSBuild.dll"
+          if [ ! -f "$msbuild_path" ]; then
+            echo "Unable to find MSBuild.dll"
+            exit 1
+          fi
+
+          echo 'MSBuild found at `'"$msbuild_path"'`.'
+
+          importbefore__Microsoft_Common_targets="${msbuild_dir}Current/Microsoft.Common.targets/ImportBefore/"
+          mkdir -p "$importbefore__Microsoft_Common_targets"
+
+          targets_path="${importbefore__Microsoft_Common_targets}Deploy.NuGet.Common.targets"
+          cat << 'EOF' > "$targets_path"
+          <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+          <!-- Outputs the package path for CI to use -->
+        
+          <!-- Expose variables for CI to use -->
+          <Target Name="_ExposeCIVariables" AfterTargets="Pack" Condition="'$(EXPOSE_CI_VARIABLES)' == 'true'">
+            <Error Text="%24%28GITHUB_OUTPUT%29 is undefined" Condition="'$(GITHUB_OUTPUT)' == ''" />
+            <WriteLinesToFile File="$(GITHUB_OUTPUT)" Lines="PACKAGE_OUTPUT_PATH=$(PackageOutputAbsolutePath);PACKAGE_VERSION_URL=https://www.nuget.org/packages/$(PackageId)/$(PackageVersion)" />
+          </Target>
+        
+          <!-- Prevent EXPOSE_CI_VARIABLES from propagating to project references -->
+          <ItemGroup>
+            <ProjectReference Update="@(ProjectReference)" UndefineProperties="%(ProjectReference.UndefineProperties);EXPOSE_CI_VARIABLES" />
+          </ItemGroup>
+
+          </Project>
+          EOF
+
+          echo 'Targets written to `'"$targets_path"'`.'
+
+      - name: Build & Pack Project
+        id: build
+        run: dotnet pack -warnaserror -c Release -p:EXPOSE_CI_VARIABLES=true ${{ inputs.project_path }}
+
+      - name: Upload Output
+        uses: actions/upload-artifact@v3
+        with:
+          name: NuGet Packages
+          path: |
+            ${{ steps.build.outputs.PACKAGE_OUTPUT_PATH }}*.nupkg
+
+      - name: Publish Package
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: dotnet nuget push ${{ steps.build.outputs.PACKAGE_OUTPUT_PATH }}*.nupkg -k "$NUGET_API_KEY" -s "https://api.nuget.org/v3/index.json"
