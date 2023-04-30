@@ -19,6 +19,12 @@ defaults:
   run:
     shell: bash
 
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOTNET_GENERATE_ASPNET_CERTIFICATE: 'false'
+  DOTNET_NOLOGO: 'true'
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 'true'
+
 jobs:
   deploy_nuget:
     environment:
