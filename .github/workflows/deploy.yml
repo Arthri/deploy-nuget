@@ -4,6 +4,11 @@ run-name: Deploy / NuGet
 on:
   workflow_call:
     inputs:
+      changelog:
+        default: ""
+        description: A list of changes introduced in the new version of the package.
+        required: false
+        type: string
       environment_name:
         default: "NuGet (Stable)"
         description: The name of the environment containing the NuGet API key.
@@ -12,6 +17,11 @@ on:
       project_path:
         default: ""
         description: The path of the project to build and pack.
+        required: false
+        type: string
+      version:
+        default: ""
+        description: The version of the package.
         required: false
         type: string
 
@@ -80,7 +90,7 @@ jobs:
 
       - name: Build & Pack Project
         id: build
-        run: dotnet pack -warnaserror -c Release -p:EXPOSE_CI_VARIABLES=true ${{ inputs.project_path }}
+        run: dotnet pack -warnaserror -c Release -p:EXPOSE_CI_VARIABLES=true${{ inputs.version && format(' -p:Version="{0}"', inputs.version) || '' }}${{ inputs.changelog && format(' -p:PackageReleaseNotes="{0}"', inputs.changelog) || '' }} ${{ inputs.project_path }}
 
       - name: Upload Output
         uses: actions/upload-artifact@v3
