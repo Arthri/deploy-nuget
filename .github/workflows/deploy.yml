@@ -89,8 +89,11 @@ jobs:
           echo 'Targets written to `'"$targets_path"'`.'
 
       - name: Build & Pack Project
+        env:
+          PackageReleaseNotes: ${{ inputs.changelog }}
+          Version: ${{ inputs.version }}
         id: build
-        run: dotnet pack -warnaserror -c Release -p:EXPOSE_CI_VARIABLES=true${{ inputs.version && format(' -p:Version="{0}"', inputs.version) || '' }}${{ inputs.changelog && format(' -p:PackageReleaseNotes="{0}"', inputs.changelog) || '' }} ${{ inputs.project_path }}
+        run: dotnet pack -warnaserror -c Release -p:EXPOSE_CI_VARIABLES=true ${{ inputs.project_path }}
 
       - name: Upload Output
         uses: actions/upload-artifact@v3
