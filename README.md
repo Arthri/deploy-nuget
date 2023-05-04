@@ -1,4 +1,4 @@
-# deploy-nuget
+# deploy_nuget
 A reusable workflow for deploying to NuGet.
 
 ## Installation
@@ -13,7 +13,7 @@ on:
 
 jobs:
   deploy:
-    uses: Arthri/deploy-nuget/.github/workflows/deploy.yml@v1
+    uses: Arthri/deploy_nuget/.github/workflows/deploy.yml@v1
 ```
 
 ## Usage
@@ -33,7 +33,7 @@ By default, the workflow acquires `NUGET_API_KEY` from an environment named `NuG
 ```yml
 jobs:
   deploy:
-    uses: Arthri/deploy-nuget/.github/workflows/deploy.yml@v1
+    uses: Arthri/deploy_nuget/.github/workflows/deploy.yml@v1
     with:
       environment_name: Custom Environment Name
 ```
@@ -43,7 +43,7 @@ By default, the workflow builds the singular solution or csproj in the repositor
 ```yml
 jobs:
   deploy:
-    uses: Arthri/deploy-nuget/.github/workflows/deploy.yml@v1
+    uses: Arthri/deploy_nuget/.github/workflows/deploy.yml@v1
     with:
       project_path: ./src/Test.App/Test.App.csproj
 ```
