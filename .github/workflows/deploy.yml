@@ -52,7 +52,7 @@ jobs:
         id: setup_dotnet
         uses: actions/setup-dotnet@v3
 
-      - name: Write MSBuild Extensions
+      - name: Setup Environment
         run: |
           msbuild_dir="$(dirname "$(which dotnet)")/sdk/${{ steps.setup_dotnet.outputs.dotnet-version }}/"
           msbuild_path="${msbuild_dir}MSBuild.dll"
