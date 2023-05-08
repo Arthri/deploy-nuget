@@ -28,6 +28,17 @@ jobs:
 1. Configure environment.
 1. Add a secret named `NUGET_API_KEY`
 
+### Set Release Notes or Changelog
+```yml
+jobs:
+  deploy:
+    uses: Arthri/deploy_nuget/.github/workflows/deploy.yml@v1
+    with:
+      changelog: |
+        - Added this
+        - Removed that
+```
+
 ### Specify Environment Name
 By default, the workflow acquires `NUGET_API_KEY` from an environment named `NuGet (Stable)`. The environment name can be changed using the `environment_name` parameter.
 ```yml
@@ -46,4 +57,14 @@ jobs:
     uses: Arthri/deploy_nuget/.github/workflows/deploy.yml@v1
     with:
       project_path: ./src/Test.App/Test.App.csproj
+```
+
+### Set Version
+By default, the package's version will be set to the `$(Version)` property of a project. It can be overriden using configuration options.
+```yml
+jobs:
+  deploy:
+    uses: Arthri/deploy_nuget/.github/workflows/deploy.yml@v1
+    with:
+      version: v1.0.0
 ```
