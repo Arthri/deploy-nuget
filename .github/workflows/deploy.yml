@@ -53,7 +53,15 @@ jobs:
         uses: actions/setup-dotnet@v3
 
       - name: Setup Environment
+        env:
+          PACKAGE_VERSION: ${{ inputs.version }}
         run: |
+          # "Version" is the name of the MSBuild property,
+          # so it's not in SCREAMING_CASE
+          echo 'Version='"${PACKAGE_VERSION#**v}" >> "$GITHUB_ENV"
+
+
+
           msbuild_dir="$(dirname "$(which dotnet)")/sdk/${{ steps.setup_dotnet.outputs.dotnet-version }}/"
           msbuild_path="${msbuild_dir}MSBuild.dll"
           if [ ! -f "$msbuild_path" ]; then
@@ -91,7 +99,6 @@ jobs:
       - name: Build & Pack Project
         env:
           PackageReleaseNotes: ${{ inputs.changelog }}
-          Version: ${{ inputs.version }}
         id: build
         run: dotnet pack -warnaserror -c Release -p:EXPOSE_CI_VARIABLES=true ${{ inputs.project_path }}
 
