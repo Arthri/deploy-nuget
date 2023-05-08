@@ -59,6 +59,16 @@ jobs:
       project_path: ./src/Test.App/Test.App.csproj
 ```
 
+### Disable Version Sanitization
+By default, the inputted version will be sanitized to remove the `v` prefix and any directories. For example, `a/b/c/v1.0.0` will turn into `1.0.0`, and `v1.2.3` will turn into `1.2.3`. Sanitization is configurable. The following example demonstrates disabling version sanitization.
+```yml
+jobs:
+  deploy:
+    uses: Arthri/deploy_nuget/.github/workflows/deploy.yml@v1
+    with:
+      sanitize_version: false
+```
+
 ### Set Version
 By default, the package's version will be set to the `$(Version)` property of a project. It can be overriden using configuration options.
 ```yml
