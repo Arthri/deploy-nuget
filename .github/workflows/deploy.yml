@@ -11,7 +11,7 @@ on:
         type: string
       environment_name:
         default: "NuGet (Stable)"
-        description: The name of the environment containing the NuGet API key.
+        description: The name of the environment that represents the deployment.
         required: false
         type: string
       project_path:
@@ -29,6 +29,10 @@ on:
         description: The version of the package.
         required: false
         type: string
+    secrets:
+      NUGET_API_KEY:
+        description: The API key to use to publish the package to NuGet.
+        required: true
 
 defaults:
   run:
