@@ -2,19 +2,22 @@
 A reusable workflow for deploying to NuGet.
 
 ## Installation
-Add a new workflow under .github/workflows/ with the following contents.
-```yml
-name: Deploy
+1. Add a new workflow under .github/workflows/ with the following contents.
+    ```yml
+    name: Deploy
 
-on:
-  push:
-    branches:
-      - release/nuget
+    on:
+      push:
+        branches:
+          - release/nuget
 
-jobs:
-  deploy:
-    uses: Arthri/deploy_nuget/.github/workflows/deploy.yml@v1
-```
+    jobs:
+      deploy:
+        uses: Arthri/deploy_nuget/.github/workflows/deploy.yml@v1
+        secrets:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+    ```
+2. Create a new environment named `NuGet (Stable)` with a secret named `NUGET_API_KEY` containing the API key used to publish packages to NuGet.
 
 ## Usage
 1. Create a pull request from `master` to `release/nuget`.
