@@ -45,7 +45,7 @@ env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 'true'
 
 jobs:
-  deploy_nuget:
+  deploy-nuget:
     environment:
       name: ${{ inputs.environment_name }}
       url: ${{ steps.build.outputs.PACKAGE_VERSION_URL }}

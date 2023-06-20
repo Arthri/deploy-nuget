@@ -1,4 +1,4 @@
-# deploy_nuget
+# deploy-nuget
 A reusable workflow for deploying to NuGet.
 
 ## Installation
@@ -13,7 +13,7 @@ A reusable workflow for deploying to NuGet.
 
     jobs:
       deploy:
-        uses: Arthri/deploy_nuget/.github/workflows/deploy.yml@v1
+        uses: Arthri/deploy-nuget/.github/workflows/deploy.yml@v1
         secrets:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
     ```
@@ -35,7 +35,7 @@ A reusable workflow for deploying to NuGet.
 ```yml
 jobs:
   deploy:
-    uses: Arthri/deploy_nuget/.github/workflows/deploy.yml@v1
+    uses: Arthri/deploy-nuget/.github/workflows/deploy.yml@v1
     with:
       changelog: |
         - Added this
@@ -47,7 +47,7 @@ By default, the workflow acquires `NUGET_API_KEY` from an environment named `NuG
 ```yml
 jobs:
   deploy:
-    uses: Arthri/deploy_nuget/.github/workflows/deploy.yml@v1
+    uses: Arthri/deploy-nuget/.github/workflows/deploy.yml@v1
     with:
       environment_name: Custom Environment Name
 ```
@@ -57,7 +57,7 @@ By default, the workflow builds the singular solution or csproj in the repositor
 ```yml
 jobs:
   deploy:
-    uses: Arthri/deploy_nuget/.github/workflows/deploy.yml@v1
+    uses: Arthri/deploy-nuget/.github/workflows/deploy.yml@v1
     with:
       project_path: ./src/Test.App/Test.App.csproj
 ```
@@ -67,7 +67,7 @@ By default, the inputted version will be sanitized to remove the `v` prefix and 
 ```yml
 jobs:
   deploy:
-    uses: Arthri/deploy_nuget/.github/workflows/deploy.yml@v1
+    uses: Arthri/deploy-nuget/.github/workflows/deploy.yml@v1
     with:
       sanitize_version: false
 ```
@@ -77,7 +77,7 @@ By default, the package's version will be set to the `$(Version)` property of a 
 ```yml
 jobs:
   deploy:
-    uses: Arthri/deploy_nuget/.github/workflows/deploy.yml@v1
+    uses: Arthri/deploy-nuget/.github/workflows/deploy.yml@v1
     with:
       version: v1.0.0
 ```
