@@ -1,4 +1,4 @@
-# deploy_nuget
+# deploy-nuget
 A reusable workflow for deploying to NuGet.
 
 ## Installation
@@ -13,11 +13,11 @@ A reusable workflow for deploying to NuGet.
 
     jobs:
       deploy:
-        uses: Arthri/deploy_nuget/.github/workflows/deploy.yml@v1
+        uses: Arthri/deploy-nuget/.github/workflows/deploy.yml@v1
         secrets:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+          NUGET-API-KEY: ${{ secrets.NUGET-API-KEY }}
     ```
-2. Create a new environment named `NuGet (Stable)` with a secret named `NUGET_API_KEY` containing the API key used to publish packages to NuGet.
+2. Create a new environment named `NuGet (Stable)` with a secret named `NUGET-API-KEY` containing the API key used to publish packages to NuGet.
 
 ## Usage
 1. Create a pull request from `master` to `release/nuget`.
@@ -29,13 +29,13 @@ A reusable workflow for deploying to NuGet.
 1. Go to `Code and automation > Environments`.
 1. Create a new environment named `NuGet (Stable)`.
 1. Configure environment.
-1. Add a secret named `NUGET_API_KEY`
+1. Add a secret named `NUGET-API-KEY`
 
 ### Set Release Notes or Changelog
 ```yml
 jobs:
   deploy:
-    uses: Arthri/deploy_nuget/.github/workflows/deploy.yml@v1
+    uses: Arthri/deploy-nuget/.github/workflows/deploy.yml@v1
     with:
       changelog: |
         - Added this
@@ -43,23 +43,23 @@ jobs:
 ```
 
 ### Specify Environment Name
-By default, the workflow acquires `NUGET_API_KEY` from an environment named `NuGet (Stable)`. The environment name can be changed using the `environment_name` parameter.
+By default, the workflow acquires `NUGET-API-KEY` from an environment named `NuGet (Stable)`. The environment name can be changed using the `environment-name` parameter.
 ```yml
 jobs:
   deploy:
-    uses: Arthri/deploy_nuget/.github/workflows/deploy.yml@v1
+    uses: Arthri/deploy-nuget/.github/workflows/deploy.yml@v1
     with:
-      environment_name: Custom Environment Name
+      environment-name: Custom Environment Name
 ```
 
 ### Specify Project
-By default, the workflow builds the singular solution or csproj in the repository's root. If there is more than one solution or project in the root, a project must be specified manually using the `project_path` parameter.
+By default, the workflow builds the singular solution or csproj in the repository's root. If there is more than one solution or project in the root, a project must be specified manually using the `project-path` parameter.
 ```yml
 jobs:
   deploy:
-    uses: Arthri/deploy_nuget/.github/workflows/deploy.yml@v1
+    uses: Arthri/deploy-nuget/.github/workflows/deploy.yml@v1
     with:
-      project_path: ./src/Test.App/Test.App.csproj
+      project-path: ./src/Test.App/Test.App.csproj
 ```
 
 ### Disable Version Sanitization
@@ -67,17 +67,17 @@ By default, the inputted version will be sanitized to remove the `v` prefix and 
 ```yml
 jobs:
   deploy:
-    uses: Arthri/deploy_nuget/.github/workflows/deploy.yml@v1
+    uses: Arthri/deploy-nuget/.github/workflows/deploy.yml@v1
     with:
-      sanitize_version: false
+      sanitize-version: false
 ```
 
 ### Set Version
-By default, the package's version will be set to the `$(Version)` property of a project. It can be overriden using configuration options.
+By default, the package's version will be set to the `$(Version)` property of a project. It can be overridden using configuration options.
 ```yml
 jobs:
   deploy:
-    uses: Arthri/deploy_nuget/.github/workflows/deploy.yml@v1
+    uses: Arthri/deploy-nuget/.github/workflows/deploy.yml@v1
     with:
       version: v1.0.0
 ```
