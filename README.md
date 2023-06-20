@@ -73,7 +73,7 @@ jobs:
 ```
 
 ### Set Version
-By default, the package's version will be set to the `$(Version)` property of a project. It can be overriden using configuration options.
+By default, the package's version will be set to the `$(Version)` property of a project. It can be overridden using configuration options.
 ```yml
 jobs:
   deploy:
