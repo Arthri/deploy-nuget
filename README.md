@@ -2,7 +2,7 @@
 A reusable workflow for deploying to NuGet.
 
 ## Installation
-1. Add a new workflow under .github/workflows/ with the following contents.
+1. Add a new workflow under `.github/workflows/` with the following contents.
     ```yml
     name: Deploy
 
@@ -15,7 +15,7 @@ A reusable workflow for deploying to NuGet.
       deploy:
         uses: Arthri/deploy-nuget/.github/workflows/deploy.yml@v1
         secrets:
-          NUGET-API-KEY: ${{ secrets.NUGET-API-KEY }}
+          NUGET-API-KEY: ${{ secrets.NUGET_API_KEY }}
     ```
 2. Create a new environment named `NuGet (Stable)` with a secret named `NUGET-API-KEY` containing the API key used to publish packages to NuGet.
 
