@@ -9,17 +9,17 @@ on:
         description: A list of changes introduced in the new version of the package.
         required: false
         type: string
-      environment_name:
+      environment-name:
         default: "NuGet (Stable)"
         description: The name of the environment that represents the deployment.
         required: false
         type: string
-      project_path:
+      project-path:
         default: ""
         description: The path of the project to build and pack.
         required: false
         type: string
-      sanitize_version:
+      sanitize-version:
         default: true
         description: If true, sanitizes the inputted version by removing the `v` prefix and directories.
         required: false
@@ -30,7 +30,7 @@ on:
         required: false
         type: string
     secrets:
-      NUGET_API_KEY:
+      NUGET-API-KEY:
         description: The API key to use to publish the package to NuGet.
         required: true
 
@@ -47,8 +47,8 @@ env:
 jobs:
   deploy-nuget:
     environment:
-      name: ${{ inputs.environment_name }}
-      url: ${{ steps.build.outputs.PACKAGE_VERSION_URL }}
+      name: ${{ inputs.environment-name }}
+      url: ${{ steps.build.outputs.PACKAGE-VERSION-URL }}
 
     runs-on: ubuntu-22.04
     timeout-minutes: 2
@@ -58,7 +58,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup .NET
-        id: setup_dotnet
+        id: setup-dotnet
         uses: actions/setup-dotnet@v3
 
       - name: Setup Environment
@@ -67,13 +67,13 @@ jobs:
         run: |
           # "Version" is the name of the MSBuild property,
           # so it's not in SCREAMING_CASE
-          if ${{ inputs.sanitize_version }} ; then
+          if ${{ inputs.sanitize-version }} ; then
             echo 'Version='"${PACKAGE_VERSION#**v}" >> "$GITHUB_ENV"
           fi
 
 
 
-          msbuild_dir="$(dirname "$(which dotnet)")/sdk/${{ steps.setup_dotnet.outputs.dotnet-version }}/"
+          msbuild_dir="$(dirname "$(which dotnet)")/sdk/${{ steps.setup-dotnet.outputs.dotnet-version }}/"
           msbuild_path="${msbuild_dir}MSBuild.dll"
           if [ ! -f "$msbuild_path" ]; then
             echo "Unable to find MSBuild.dll"
@@ -94,7 +94,7 @@ jobs:
           <!-- Expose variables for CI to use -->
           <Target Name="_ExposeCIVariables" AfterTargets="Pack" Condition="'$(EXPOSE_CI_VARIABLES)' == 'true'">
             <Error Text="%24%28GITHUB_OUTPUT%29 is undefined" Condition="'$(GITHUB_OUTPUT)' == ''" />
-            <WriteLinesToFile File="$(GITHUB_OUTPUT)" Lines="PACKAGE_OUTPUT_PATH=$(PackageOutputAbsolutePath);PACKAGE_VERSION_URL=https://www.nuget.org/packages/$(PackageId)/$(PackageVersion)" />
+            <WriteLinesToFile File="$(GITHUB_OUTPUT)" Lines="PACKAGE-OUTPUT-PATH=$(PackageOutputAbsolutePath);PACKAGE-VERSION-URL=https://www.nuget.org/packages/$(PackageId)/$(PackageVersion)" />
           </Target>
         
           <!-- Prevent EXPOSE_CI_VARIABLES from propagating to project references -->
@@ -112,16 +112,16 @@ jobs:
           PackageReleaseNotes: ${{ inputs.changelog }}
           Version: ${{ env.Version || inputs.version }}
         id: build
-        run: dotnet pack -warnaserror -c Release -p:EXPOSE_CI_VARIABLES=true ${{ inputs.project_path }}
+        run: dotnet pack -warnaserror -c Release -p:EXPOSE_CI_VARIABLES=true ${{ inputs.project-path }}
 
       - name: Upload Output
         uses: actions/upload-artifact@v3
         with:
           name: NuGet Packages
           path: |
-            ${{ steps.build.outputs.PACKAGE_OUTPUT_PATH }}*.nupkg
+            ${{ steps.build.outputs.PACKAGE-OUTPUT-PATH }}*.nupkg
 
       - name: Publish Package
         env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-        run: dotnet nuget push ${{ steps.build.outputs.PACKAGE_OUTPUT_PATH }}*.nupkg -k "$NUGET_API_KEY" -s "https://api.nuget.org/v3/index.json"
+          NUGET_API_KEY: ${{ secrets.NUGET-API-KEY }}
+        run: dotnet nuget push ${{ steps.build.outputs.PACKAGE-OUTPUT-PATH }}*.nupkg -k "$NUGET_API_KEY" -s "https://api.nuget.org/v3/index.json"
